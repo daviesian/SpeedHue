@@ -1,5 +1,6 @@
 package org.iandavies.android.speedhue;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
@@ -12,7 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 
-public class MainActivity extends ActionBarActivity implements LocationListener {
+public class MainActivity extends Activity implements LocationListener {
 
     LocationManager locationManager = null;
 
@@ -30,6 +31,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
+        this.findViewById(R.id.target).setBackgroundColor(Color.HSVToColor(new float[] {(maxHue + minHue) / 2, 1, 1}));
     }
 
 
