@@ -1,6 +1,7 @@
 package org.iandavies.android.speedhue;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -8,12 +9,18 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 public class MainActivity extends ActionBarActivity implements LocationListener {
 
     LocationManager locationManager = null;
 
+    final float minHue = 115;
+    final float maxHue = 0;
+
+    final float minSpeed = 25;
+    final float maxSpeed = 35;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +56,22 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     }
 
     public void onLocationChanged(Location location) {
-        // Called when a new location is found by the network location provider.
-        float speed = location.getSpeed();
 
+        float mps = location.getSpeed(); // Metres per second
+
+        float mph = mps * 2.23693629f;
+
+        View layout = this.findViewById(R.id.layout);
+
+
+        float t = (mph - minSpeed) / (maxSpeed - minSpeed);
+
+        t = Math.min(t, 1);
+        t = Math.max(t, 0);
+
+        float hue = minHue + t*(maxHue-minHue);
+
+        layout.setBackgroundColor(Color.HSVToColor(new float[] { hue, 1, 1 }));
     }
 
     public void onStatusChanged(String provider, int status, Bundle extras) {}
