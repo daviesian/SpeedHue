@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 
 public class MainActivity extends Activity implements LocationListener {
@@ -20,8 +21,8 @@ public class MainActivity extends Activity implements LocationListener {
     final float minHue = 115;
     final float maxHue = 0;
 
-    final float minSpeed = 25;
-    final float maxSpeed = 35;
+    final float minSpeed = 62;
+    final float maxSpeed = 70;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +33,7 @@ public class MainActivity extends Activity implements LocationListener {
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
-        this.findViewById(R.id.target).setBackgroundColor(Color.HSVToColor(new float[] {(maxHue + minHue) / 2, 1, 1}));
+        this.findViewById(R.id.target).setBackgroundColor(mphToColor(66));
     }
 
 
@@ -58,6 +59,17 @@ public class MainActivity extends Activity implements LocationListener {
         return super.onOptionsItemSelected(item);
     }
 
+    private int mphToColor(float mph) {
+        float t = (Math.round(mph) - minSpeed) / (maxSpeed - minSpeed);
+
+        t = Math.min(t, 1);
+        t = Math.max(t, 0);
+
+        float hue = minHue + t*(maxHue-minHue);
+
+        return Color.HSVToColor(new float[] { hue, 1, 1 });
+    }
+
     public void onLocationChanged(Location location) {
 
         float mps = location.getSpeed(); // Metres per second
@@ -67,14 +79,11 @@ public class MainActivity extends Activity implements LocationListener {
         View layout = this.findViewById(R.id.layout);
 
 
-        float t = (mph - minSpeed) / (maxSpeed - minSpeed);
 
-        t = Math.min(t, 1);
-        t = Math.max(t, 0);
+        layout.setBackgroundColor(mphToColor(mph));
 
-        float hue = minHue + t*(maxHue-minHue);
-
-        layout.setBackgroundColor(Color.HSVToColor(new float[] { hue, 1, 1 }));
+        TextView txtSpeed = (TextView)this.findViewById(R.id.txtSpeed);
+        txtSpeed.setText(Math.round(mph));
     }
 
     public void onStatusChanged(String provider, int status, Bundle extras) {}
