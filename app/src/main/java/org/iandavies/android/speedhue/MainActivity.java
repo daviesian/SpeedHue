@@ -80,4 +80,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
     public void onProviderDisabled(String provider) {}
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
 }
